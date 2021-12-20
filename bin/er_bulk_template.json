@@ -1,0 +1,113 @@
+{
+    "rule": {
+        "name": "ER-bulk",
+        "children": [
+            {
+                "name": "erbulk_debeij_000",
+                "children": [],
+                "behaviors": [
+                    {
+                        "name": "edgeRedirector",
+                        "options": {
+                            "enabled": true,
+                            "isSharedPolicy": true,
+                            "cloudletSharedPolicy": 177576
+                        }
+                    }
+                ],
+                "criteria": [
+                    {
+                        "name": "matchVariable",
+                        "options": {
+                            "variableName": "PMUSER_ER_HASH",
+                            "matchOperator": "IS_ONE_OF",
+                            "variableValues": [
+                                "0"
+                            ],
+                            "matchWildcard": false,
+                            "matchCaseSensitive": true
+                        }
+                    }
+                ],
+                "criteriaMustSatisfy": "all"
+            }
+        ],
+        "behaviors": [
+            {
+                "name": "setVariable",
+                "options": {
+                    "variableName": "PMUSER_ER_HASH",
+                    "valueSource": "EXPRESSION",
+                    "transform": "LOWER",
+                    "variableValue": "{{builtin.AK_PATH}}"
+                }
+            },
+            {
+                "name": "setVariable",
+                "options": {
+                    "variableName": "PMUSER_ER_HASH",
+                    "valueSource": "EXPRESSION",
+                    "transform": "MD5",
+                    "variableValue": "{{user.PMUSER_ER_HASH}}"
+                }
+            },
+            {
+                "name": "setVariable",
+                "options": {
+                    "variableName": "PMUSER_ER_HASH",
+                    "valueSource": "EXPRESSION",
+                    "transform": "SUBSTRING",
+                    "variableValue": "{{user.PMUSER_ER_HASH}}",
+                    "startIndex": "0",
+                    "endIndex": "4"
+                }
+            },
+            {
+                "name": "modifyIncomingRequestHeader",
+                "options": {
+                    "action": "ADD",
+                    "standardAddHeaderName": "OTHER",
+                    "headerValue": "{{user.PMUSER_ER_HASH}}",
+                    "customHeaderName": "ER-MD5"
+                }
+            },
+            {
+                "name": "setVariable",
+                "options": {
+                    "variableName": "PMUSER_ER_HASH",
+                    "valueSource": "EXPRESSION",
+                    "transform": "HEX_TO_DECIMAL",
+                    "variableValue": "{{user.PMUSER_ER_HASH}}"
+                }
+            },
+            {
+                "name": "setVariable",
+                "options": {
+                    "variableName": "PMUSER_ER_HASH",
+                    "valueSource": "EXPRESSION",
+                    "transform": "MODULO",
+                    "variableValue": "{{user.PMUSER_ER_HASH}}",
+                    "operandOne": "32"
+                }
+            },
+            {
+                "name": "modifyOutgoingRequestHeader",
+                "options": {
+                    "action": "ADD",
+                    "standardAddHeaderName": "OTHER",
+                    "headerValue": "{{user.PMUSER_ER_HASH}}",
+                    "customHeaderName": "ER-HASH"
+                }
+            }
+        ],
+        "criteria": [],
+        "criteriaMustSatisfy": "all"
+    },
+    "variable": {
+        "name": "PMUSER_ER_HASH",
+        "value": "",
+        "description": "",
+        "hidden": false,
+        "sensitive": false
+    }
+}

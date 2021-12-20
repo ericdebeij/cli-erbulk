@@ -1,0 +1,13 @@
+{
+  "requirements": {
+    "python": "3.10.0"
+  },
+  "commands": [
+    {
+      "name": "erbulk",
+      "aliases": ["erbulk"],
+      "version": "1.0.0",
+      "description": "Manage Bulk EdgeRedirects"
+    }
+  ]
+}
