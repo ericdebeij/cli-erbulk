@@ -41,6 +41,7 @@ Intermediate results will be stored in a con configuration file. The default nam
 ```bash
 %  akamai erbulk erbulk_test --update-property www.example.com
 ```
+Note: _Use stderr to catch all the warnings_
 
 ## Known limitations
 - Works for unique matches only
