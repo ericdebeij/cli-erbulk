@@ -329,6 +329,8 @@ if __name__ == "__main__":
         if config["policyname"] != args.policy:
             print("configuration mismatch, policyname is different from the policyname in the configuration", file=sys.stderr)
             sys.exit(1)
+        if args.buckets:
+            config["buckets"] = args.buckets
     else:
         config["policyname"]= args.policy
         config["buckets"]=32 if args.buckets is None else args.buckets
