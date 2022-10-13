@@ -151,8 +151,9 @@ class BulkRedirectManager:
                                 row[1] = "https:" + row[1]
                             if not row[1].startswith("/"):
                                 r["useRelativeUrl"] = "none"
-                            if len(row) == 3 and row[2] == "301" or row[2] == "302":
-                                r["statusCode"] = int(row[2])
+                            if len(row) == 3:
+                                if row[2] == "301" or row[2] == "302":
+                                    r["statusCode"] = int(row[2])
                             count += 1
                             mr.append(r)
                         else:
