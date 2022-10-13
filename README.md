@@ -6,7 +6,7 @@ Bulk redirects can be used to manage lots of **unique** redirects by using multi
 This works for unique redirects only, no wildcards, no regular expressions.
 
 ## Workflow
-1. Create a CSV file with all redirects. The CSV has to contain two columns: source-url-path,target-url-path
+1. Create a CSV file with all redirects. The CSV has to contain two or three columns: source-url-path,target-url-path [, 301|302]
 2.  Create a basic _SHARED_ edge redirect policy within the Akamai Control Center in the right group. This policy should contain all non-unique redirects and will be the start of every generated redirect policy
 3. Parse th CSV into multiple redirect policies using the CLI. By default 32 policies will be created
 4. Activate the redirect policies using the CLI in staging
