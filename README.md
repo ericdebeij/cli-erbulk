@@ -79,7 +79,7 @@ akamai erbulk --help
 
 PS: in the past it was simple.
 ```bash
-%  akamai install https://github.com/ericdebeij/cli-erbulk
+akamai install https://github.com/ericdebeij/cli-erbulk
 ```
 
 ## Requirements
