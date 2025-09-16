@@ -340,7 +340,7 @@ if __name__ == "__main__":
     parser.add_argument("--parse", metavar="CSV", help="parse CSV and generate edge-redirect policies")
     parser.add_argument("--delimiter", metavar=",", help="CSV delimiter", default=",")
     parser.add_argument("--activate", nargs="+", help="push edge-redirect policies to STAGING and PRODUCTION", metavar="NETWORK", choices=["STAGING", "PRODUCTION"])
-    parser.add_argument("--deactivate", nargs="+", help="push edge-redirect policies to STAGING and PRODUCTION", metavar="NETWORK", choices=["STAGING", "PRODUCTION"])
+    parser.add_argument("--deactivate", nargs="+", help="deactivate edge-redirect policies from STAGING and PRODUCTION", metavar="NETWORK", choices=["STAGING", "PRODUCTION"])
     
     parser.add_argument("--update-property", dest="properties", metavar="PROPERTY", nargs="+", help="properties to be updated (last version is used and should be editable)")
     parser.add_argument("--config", metavar="JSON", help="configuration file, defaults to ./POLICY.json")

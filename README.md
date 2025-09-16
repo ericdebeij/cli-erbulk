@@ -23,23 +23,23 @@ Intermediate results will be stored in a con configuration file. The default nam
 
 ### Check the syntax
 ```bash
-%  akamai erbulk --help
+akamai erbulk --help
 ```
 
 ### Parse a CSV file
 ```bash
-%  akamai erbulk erbulk_test --parse erbulk.csv 
+akamai erbulk erbulk_test --parse erbulk.csv 
 ```
 
 ### Activate the edgeredirector policies on staging or production
 ```bash
-%  akamai erbulk erbulk_test --activate STAGING
-%  akamai erbulk erbulk_test --activate PRODUCTION
+akamai erbulk erbulk_test --activate STAGING
+akamai erbulk erbulk_test --activate PRODUCTION
 ```
 
 ### Add or update the ER-bulk rule 
 ```bash
-%  akamai erbulk erbulk_test --update-property www.example.com
+akamai erbulk erbulk_test --update-property www.example.com
 ```
 Note: _Use stderr to catch all the warnings_
 
@@ -91,13 +91,15 @@ This is sample software. As such this software comes with absolutely no warranty
 
 ## Command line
 ```bash
-% akamai erbulk policy [options]
+akamai erbulk policy [options]
 ```
 
 ## Usage
 ```bash
-% akamai erbulk --help
-
+akamai erbulk --help
+```
+Output:
+```bash
 usage: akamai-erbulk.py [-h] [--parse CSV] [--delimiter ,] [--activate NETWORK [NETWORK ...]] [--update-property PROPERTY [PROPERTY ...]] [--config JSON] [--buckets N] [--edgerc EDGERC] [--section SECTION] [--account ACCOUNT]
                         policy
 
@@ -112,6 +114,8 @@ options:
   --delimiter ,         CSV delimiter
   --activate NETWORK [NETWORK ...]
                         push edge-redirect policies to STAGING and PRODUCTION
+  --deactivate NETWORK [NETWORK ...]
+                        deactivate edge-redirect policies from STAGING and PRODUCTION
   --update-property PROPERTY [PROPERTY ...]
                         properties to be updated (last version is used and should be editable)
   --config JSON         configuration file, defaults to ./POLICY.json
