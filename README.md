@@ -75,10 +75,10 @@ source ../../venv/cli-erbulk/bin/activate
 pip3 install -r requirements.txt
 cd
 akamai erbulk --help
-
-# PS: in the past it was simple.
-#%  akamai install https://github.com/ericdebeij/cli-erbulk
 ```
+
+PS: in the past it was simple.
+%  akamai install https://github.com/ericdebeij/cli-erbulk
 
 ## Requirements
 * Python 3.10+
