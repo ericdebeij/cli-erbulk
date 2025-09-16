@@ -12,6 +12,33 @@ import os
 from akamai.edgegrid import EdgeGridAuth, EdgeRc
 from urllib.parse import urljoin
 
+from datetime import datetime, timezone
+import time
+
+def parse_iso8601(dt_str: str) -> datetime:
+    """Parse ISO 8601 datetime string into a UTC datetime object."""
+    try:
+        return datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
+    except Exception as e:
+        print(f"Failed to parse date: {dt_str} ({e})")
+        return None
+
+def check_for_rate_limit(result):
+    if result is not None:
+        remaing = result.headers.get("X-RateLimit-Remaining")
+        if remaing is not None and int(remaing) > 0:
+            return
+
+        waittill = result.headers.get("X-RateLimit-Next")
+        if waittill is not None:
+            dt = parse_iso8601(waittill)
+            if dt is not None:
+                now = datetime.now(timezone.utc)
+                waitseconds = (dt - now).total_seconds()
+                if waitseconds > 0:
+                    print(f"Rate limit exceeded, waiting until {dt.isoformat()} ({waitseconds:.0f} seconds)")
+                    time.sleep(waitseconds + 1)
+
 class BulkRedirectManager:
     def __init__(self, edgerc="~/.edgerc", section="default", account = None):
         self._edgerc = edgerc
@@ -167,14 +194,22 @@ class BulkRedirectManager:
 
         return versionset
 
-    def er_bulkactivate(self, versions, network):
-
+    def er_bulkactivate(self, versions, network, activate=True):
+        operation = "ACTIVATION"
+        if not activate:
+            operation = "DEACTIVATION"
+        result = None
         for v in versions:
             policyId = v["policyId"]
-            b = dict(network=network.upper(), operation="ACTIVATION", policyVersion=v["version"])
-            result = self._session.post(self.akurl(f"/cloudlets/v3/policies/{policyId}/activations"), 
-                json=b,
-                headers={"content-type": "application/json"})
+            b = dict(network=network.upper(), operation=operation, policyVersion=v["version"])
+            while True:
+                check_for_rate_limit(result)
+                result = self._session.post(self.akurl(f"/cloudlets/v3/policies/{policyId}/activations"), 
+                    json=b,
+                    headers={"content-type": "application/json"})
+                if result.status_code == 429:
+                    continue
+                break
 
             self.checkresponse(result)
             response = result.json()
@@ -305,6 +340,8 @@ if __name__ == "__main__":
     parser.add_argument("--parse", metavar="CSV", help="parse CSV and generate edge-redirect policies")
     parser.add_argument("--delimiter", metavar=",", help="CSV delimiter", default=",")
     parser.add_argument("--activate", nargs="+", help="push edge-redirect policies to STAGING and PRODUCTION", metavar="NETWORK", choices=["STAGING", "PRODUCTION"])
+    parser.add_argument("--deactivate", nargs="+", help="push edge-redirect policies to STAGING and PRODUCTION", metavar="NETWORK", choices=["STAGING", "PRODUCTION"])
+    
     parser.add_argument("--update-property", dest="properties", metavar="PROPERTY", nargs="+", help="properties to be updated (last version is used and should be editable)")
     parser.add_argument("--config", metavar="JSON", help="configuration file, defaults to ./POLICY.json")
     parser.add_argument("--buckets", metavar="N", type=int, help="number of buckets, defaults to number in the config or 32")
@@ -319,7 +356,7 @@ if __name__ == "__main__":
 
     brm = BulkRedirectManager(edgerc=args.edgerc, section=args.section, account=args.account)
 
-    if not args.parse and not args.activate and not args.properties:
+    if not args.parse and not args.activate and not args.properties and not args.deactivate:
         print("there is no action identified, please use either parse, activate, update-property or a combination", file=sys.stderr)
         sys.exit(1)
 
@@ -356,6 +393,11 @@ if __name__ == "__main__":
     if args.activate:
         for network in args.activate:
             brm.er_bulkactivate(config["policies"], network)
+
+    if args.deactivate:
+        for network in args.deactivate:
+            brm.er_bulkactivate(config["policies"], network, activate=False)
+
 
     if args.properties:
         for p in args.properties:

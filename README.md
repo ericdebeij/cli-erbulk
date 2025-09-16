@@ -49,9 +49,35 @@ Note: _Use stderr to catch all the warnings_
 - No proper error cheching. If you get a stack trace, consult the source code
 - Not tested 
 
-## Akamai CLI Install
+## Run within your python environment
+For devlopment purpose you can just run this in your own environment
 ```bash
-%  akamai install https://github.com/ericdebeij/cli-erbulk
+git clone https://github.com/ericdebeij/cli-erbulk
+cd cli-erbulk
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt
+python3 bin/akamai-erbulk.py --help
+```
+
+## Akamai CLI Install
+akamai install is no longer able to install a custom plugin. To install the plugin manually you have to take the following manual steps (example steps when you are on a Mac):
+```bash
+akamai
+cd ~/.akamai-cli
+mkdir -p src
+cd src
+git clone https://github.com/ericdebeij/cli-erbulk
+cd cli-erbulk
+mkdir -p ../../venv
+python3 -m venv ../../venv/cli-erbulk
+source ../../venv/cli-erbulk/bin/activate
+pip3 install -r requirements.txt
+cd
+akamai erbulk --help
+
+# PS: in the past it was simple.
+#%  akamai install https://github.com/ericdebeij/cli-erbulk
 ```
 
 ## Requirements
